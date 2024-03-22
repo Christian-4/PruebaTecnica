@@ -41,7 +41,7 @@ const applySwapiEndpoints = (server, app) => {
       }
       res.status(200).json(personMapped)
     } catch (err) {
-      res.status(500).json({ Error: err })
+      res.status(500).json({ Error: err.message })
     }
   });
 
@@ -64,12 +64,42 @@ const applySwapiEndpoints = (server, app) => {
       }
       res.status(200).json(planetMapped)
     } catch (err) {
-      res.status(500).json({ Error: err })
+      res.status(500).json({ Error: err.message })
     }
   });
 
   server.get('/hfswapi/getWeightOnPlanetRandom', async (req, res) => {
-    res.sendStatus(501);
+    try {
+      let randomPerson, randomPlanet
+      const peopleInfo = await app.swapiFunctions.genericRequest(`https://swapi.py4e.com/api/people`, 'GET', null, false);
+      const planetsInfo = await app.swapiFunctions.genericRequest(`https://swapi.py4e.com/api/planets`, 'GET', null, false);
+      const randomPeopleNumber = Math.floor(Math.random() * peopleInfo.count) + 1
+      const randomPlanetsNumber = Math.floor(Math.random() * planetsInfo.count) + 1
+      randomPerson = await app.db.swPeople.findOne({ where: { id: randomPeopleNumber } });
+      randomPlanet = await app.db.swPlanet.findOne({ where: { id: randomPlanetsNumber } });
+      if (!randomPerson) {
+        randomPerson = await app.swapiFunctions.genericRequest(`https://swapi.py4e.com/api/people/${randomPeopleNumber}`, 'GET', null, true);
+      }
+
+      if (!randomPlanet) {
+        randomPlanet = await app.swapiFunctions.genericRequest(`https://swapi.py4e.com/api/planets/${randomPlanetsNumber}`, 'GET', null, true);
+      }
+
+      if (randomPerson.homeworld?.split('/').reverse()[1] == randomPlanetsNumber || randomPerson.homeworld_id?.split('/').reverse()[1] == randomPlanetsNumber) {
+        throw new Error('Its the native planet of the person');
+      }
+
+      const personWeight = {
+        person: randomPerson.name,
+        planet: randomPlanet.name,
+        weight: typeof randomPlanet.gravity === 'number' ? (randomPerson.mass * randomPlanet.gravity).toFixed(2) :
+          Number((randomPerson.mass * randomPlanet.gravity.replace(/[^0-9\.]/g, '')).toFixed(2))
+      }
+
+      res.status(200).json(personWeight)
+    } catch (err) {
+      res.status(500).json({ Error: err.message })
+    }
   });
 
   server.get('/hfswapi/getLogs', async (req, res) => {

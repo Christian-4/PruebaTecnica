@@ -48,7 +48,7 @@ const populateDB = async () => {
       height: 172,
       mass: 77,
       homeworld_name: "Tatooine",
-      homeworld_id: "/planets/1"
+      homeworld_id: "/planets/1/"
     }
   ]);
 }
