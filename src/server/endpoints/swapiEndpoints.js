@@ -47,21 +47,17 @@ const applySwapiEndpoints = (server, app) => {
 
   server.get('/hfswapi/getPlanet/:id', async (req, res) => {
     try {
-      let planetMapped;
       const id = req.params.id;
-      const planet = await app.db.swPlanet.findOne({ where: { id } });
-      if (planet) {
-        planetMapped = {
-          name: planet.name,
-          gravity: planet.gravity
-        }
-      } else {
-        const planet = await app.swapiFunctions.genericRequest(`https://swapi.py4e.com/api/planets/${id}`, 'GET', null, true);
-        planetMapped = {
-          name: planet.name,
-          gravity: planet.gravity,
-        }
+      let planet = await app.db.swPlanet.findOne({ where: { id } });
+      if (!planet) {
+        planet = await app.swapiFunctions.genericRequest(`https://swapi.py4e.com/api/planets/${id}`, 'GET', null, true);
       }
+
+      const planetMapped = {
+        name: planet.name,
+        gravity: planet.gravity,
+      }
+
       res.status(200).json(planetMapped)
     } catch (err) {
       res.status(500).json({ Error: err.message })
