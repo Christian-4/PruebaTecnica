@@ -8,7 +8,7 @@ const createExpressServer = async app => {
 	applyEndpoints(server, app);
 
 	await app.db.initDB();
-	await app.db.populateDB();
+	await app.db.populateDB(); // Lo he metido aquí para que se añadan los datos al iniciar la app ya que es sqlite en memoria, pero lo sacaría a un archivo seed.js.
 
 	server.get('/', async (req, res) => {
 		if (process.env.NODE_ENV === 'develop') {

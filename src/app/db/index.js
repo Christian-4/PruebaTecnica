@@ -10,13 +10,13 @@ sequelize = new Sequelize("sqlite::memory:", {
 });
 
 const db = {
-	Sequelize,
-	sequelize,
+  Sequelize,
+  sequelize,
 };
 
 for (const modelInit of models) {
-	const model = modelInit(db.sequelize, db.Sequelize.DataTypes);
-	db[model.name] = model;
+  const model = modelInit(db.sequelize, db.Sequelize.DataTypes);
+  db[model.name] = model;
 }
 
 Object.keys(db).forEach(modelName => {
@@ -48,7 +48,7 @@ const populateDB = async () => {
       height: 172,
       mass: 77,
       homeworld_name: "Tatooine",
-      homeworld_id: "/planets/1/"
+      homeworld_id: "/planets/1"
     }
   ]);
 }

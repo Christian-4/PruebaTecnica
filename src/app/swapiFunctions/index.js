@@ -1,19 +1,25 @@
 const fetch = require('node-fetch');
 
 const getWeightOnPlanet = (mass, gravity) => {
-    return mass * gravity;
+    if (typeof gravity !== "number") {
+        return "Cant calculate Weight because the gravity of this planet is unknown or N/A"
+    } else if (mass == "unknown") {
+        return "Cant calculate Weight because the mass of this person is unknown"
+    } else {
+        return mass * gravity;
+    }
 }
 
 const genericRequest = async (url, method, body, logging = false) => {
     let options = {
         method: method
     }
-    if(body){
+    if (body) {
         options.body = body;
     }
     const response = await fetch(url, options);
     const data = await response.json();
-    if(logging){
+    if (logging) {
         console.log(data);
     }
     return data;

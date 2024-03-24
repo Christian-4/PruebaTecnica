@@ -1,5 +1,7 @@
-class CommonPeople extends AbstractPeople {
-    constructor(id){
-        throw new Error("To be implemented");
+const AbstractPeople = require("./abstractPeople");
+
+module.exports = class CommonPeople extends AbstractPeople {
+    constructor(id, app) {
+        super(id, app)
     }
 }
