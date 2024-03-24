@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 const getWeightOnPlanet = (mass, gravity) => {
     if (typeof gravity !== "number") {
         return "Cant calculate Weight because the gravity of this planet is unknown or N/A"
-    } else if (mass == "unknown") {
+    } else if (mass === "unknown" || mass === "huwhorwhooohwh") {
         return "Cant calculate Weight because the mass of this person is unknown"
     } else {
         return mass * gravity;

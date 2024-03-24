@@ -1,12 +1,13 @@
 module.exports = class AbstractPeople {
 
-    constructor(id, app) {
+    constructor(id, app, isWookie) {
         if (this.constructor == AbstractPeople) {
             throw new Error("Abstract classes can't be instantiated.");
         }
 
         this.id = id;
         this.app = app;
+        this.isWookie = isWookie;
     }
 
     async init() {
@@ -62,11 +63,11 @@ module.exports = class AbstractPeople {
         if (planetId == this.homeworldId) {
             throw new Error('Its the native planet of the person');
         } else {
-            const Planet = await this.app.planet.planetFactory(planetId, this.app)
+            const Planet = await this.app.planet.planetFactory(planetId, this.app, this.isWookie)
             return {
                 person: this.name,
                 planet: Planet.getName(),
-                weight: this.app.swapiFunctions.getWeightOnPlanet(this.mass, Planet.getGravity())
+                weight: this.app.swapiFunctions.getWeightOnPlanet(this.mass.replaceAll(",", ""), Planet.getGravity())
             }
         }
     }
